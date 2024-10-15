@@ -1,0 +1,34 @@
+﻿@model News
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="col">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-3">
+                    <img src="~/Asset/@Model.Image" class="img-thumbnail" />
+
+                </div>
+                <div class="col-7">
+                    <h4 class="">@Model.Title</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="height:300px">
+            <p>
+                @Model.Body
+            </p>
+
+        </div>
+        <div class="card-footer">
+            <p>Posted By : <b>@Model.PostedBy</b></p>
+            <p>Posted Date : <b>@Model.PostDate</b></p>
+        </div>
+    </div>
+    <a asp-action="Index" class="btn btn-info">Back to List</a>
+</div>
+
+
+

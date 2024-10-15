@@ -1,0 +1,48 @@
+﻿@model IEnumerable<News>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    @if(Model.Any() || Model != null)
+    {
+        @foreach(var n in Model)
+        {
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-3">
+                                <img src="~/Asset/@n.Image" class="img-thumbnail" />
+                                
+                            </div>
+                            <div class="col-7">
+                                <h4 class="">@n.Title</h4>
+                            </div>
+                         </div>   
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            @n.Body.Substring(1, 100) <a asp-action="Details" asp-controller="News"
+                                                        asp-route-id="@n.NewsId"
+                                                        class="btn btn-outline-primary btn-sm">Read More...</a>
+                        </p>
+                        
+                    </div>
+                    <div class="card-footer">
+                        <p>Posted By : <b>@n.PostedBy</b></p>
+                        <p>Posted Date : <b>@n.PostDate</b></p>
+                    </div>
+                </div>
+            </div>
+        }
+        
+    }
+    else
+    {
+        <h5>No News On Database</h5>
+    }
+
+</div>
+
