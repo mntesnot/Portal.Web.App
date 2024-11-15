@@ -1,59 +1,122 @@
-﻿@model IEnumerable<News>
+﻿@model NewsViewModel
 
 @{
     ViewData["Title"] = "Manage";
 }
 
 <h1>Manage</h1>
+@if (ViewBag.IsAddNew== false)
+{
+    <a class="btn btn-primary" asp-action="Manage" asp-route-mode="true"> Create News</a>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+}
+
+@if (ViewBag.IsAddNew)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="News.NewsId" />
+                <div class="form-group">
+                    <label asp-for="News.Title" class="control-label"></label>
+                    <input asp-for="News.Title" class="form-control" />
+                    <span asp-validation-for="News.Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="News.Body" class="control-label"></label>
+                    <input asp-for="News.Body" class="form-control" />
+                    <span asp-validation-for="News.Body" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="News.Image" class="control-label"></label>
+                    <input asp-for="News.Image" class="form-control" />
+                    <span asp-validation-for="News.Image" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="News.PostDate" class="control-label"></label>
+                    <input asp-for="News.PostDate" class="form-control" />
+                    <span asp-validation-for="News.PostDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="News.PostedBy" class="control-label"></label>
+                    <input asp-for="News.PostedBy" class="form-control" />
+                    <span asp-validation-for="News.PostedBy" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    @if (Model.News.NewsId > 0)
+                    {
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    }
+                    else
+                    {
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.News.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Body)
+                @Html.DisplayNameFor(model => model.News.Body)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
+                @Html.DisplayNameFor(model => model.News.Image)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PostDate)
+                @Html.DisplayNameFor(model => model.News.PostDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PostedBy)
+                @Html.DisplayNameFor(model => model.News.PostedBy)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostedBy)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.NewsId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.NewsId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.NewsId">Delete</a>
-            </td>
-        </tr>
-}
+        @if(Model!=null && Model.NewsList.Any())
+        {
+            @foreach (var item in Model.NewsList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Body)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Image)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PostDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PostedBy)
+                    </td>
+                    <td>
+                        <a asp-action="Manage" asp-route-id="@item.NewsId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.NewsId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.NewsId">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        
     </tbody>
 </table>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

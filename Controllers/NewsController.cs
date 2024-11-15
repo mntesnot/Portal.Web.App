@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Portal.Web.App.Data;
 using Portal.Web.App.Models;
+using Portal.Web.App.ViewModels;
 
 namespace Portal.Web.App.Controllers
 {
@@ -20,11 +21,26 @@ namespace Portal.Web.App.Controllers
         }
 
         // GET: News
-        public async Task<IActionResult> Manage()
+        public async Task<IActionResult> Manage(int? id,bool? mode=false)
         {
-            var data = await _context.News.ToListAsync();
+                      
+            ViewBag.IsAddNew = mode;
+            
 
-            return View(data.OrderByDescending(a => a.PostDate));
+            var model = new NewsViewModel();
+            model.NewsList = await _context.News.ToListAsync();
+            if (id > 0)
+            {
+                model.News =await _context.News.FindAsync(id);
+                ViewBag.IsAddNew = true;
+
+            }
+            else
+            {
+                model.News = new News();
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> Index()
@@ -67,11 +83,36 @@ namespace Portal.Web.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(news);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if(news.NewsId > 0)
+                {
+                    var updata= await _context.News.FindAsync(news.NewsId);
+                    if(updata != null)
+                    {
+                        updata.PostDate = DateTime.Now;
+
+                        if (updata.Title != news.Title)
+                            updata.Title = news.Title;
+
+                        if (updata.PostedBy != news.PostedBy)
+                            updata.PostedBy = news.PostedBy;
+
+                        if(updata.Body != news.Body)
+                            updata.Body = news.Body;
+
+                        _context.News.Update(updata);
+                        await _context.SaveChangesAsync();
+
+                    }
+                }
+                else
+                {
+                    _context.Add(news);
+                    await _context.SaveChangesAsync();
+                }
+                
+                return RedirectToAction(nameof(Manage));
             }
-            return View(news);
+            return View("Manage");
         }
 
         // GET: News/Edit/5
@@ -120,9 +161,9 @@ namespace Portal.Web.App.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Manage));
             }
-            return View(news);
+            return View("Manage");
         }
 
         // GET: News/Delete/5

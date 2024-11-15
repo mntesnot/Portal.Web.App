@@ -24,9 +24,14 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            @n.Body.Substring(1, 100) <a asp-action="Details" asp-controller="News"
-                                                        asp-route-id="@n.NewsId"
-                                                        class="btn btn-outline-primary btn-sm">Read More...</a>
+                            @if(n.Body.Length>100){
+                                @n.Body.Substring(1, 100) <a asp-action="Details" asp-controller="News"
+                                                         asp-route-id="@n.NewsId"
+                                                         class="btn btn-outline-primary btn-sm">Read More...</a>
+                            }else{
+                                @n.Body
+                            }
+                            
                         </p>
                         
                     </div>
